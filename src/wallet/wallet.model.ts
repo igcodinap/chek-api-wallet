@@ -21,11 +21,10 @@ export class NewWallet {
     currency: string;
     userId: number;
     constructor(
-        balance: number,
         currency: string,
         userId: number
     ) {
-        this.balance = balance;
+        this.balance = 0;
         this.currency = currency;
         this.userId = userId;
     }

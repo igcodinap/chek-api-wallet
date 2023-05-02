@@ -4,6 +4,7 @@
   "description": "wallet api",
   "main": "app.ts",
   "scripts": {
+    "start:dev": "ts-node ./src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "igcodinap",
