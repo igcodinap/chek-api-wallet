@@ -1,11 +1,11 @@
 import { ResultSetHeader } from 'mysql2/promise';
 import { pool } from '../config/database';
 import { Wallet, NewWallet } from './wallet.model';
+import AppError from '../errors/AppError';
 
 export interface IWalletRepository {
     createWallet(newWallet: NewWallet): Promise<Wallet>;
-    // getWalletById(walletId: number): Promise<Wallet>;
-    // getWalletByUserId(userId: number): Promise<Wallet>;
+    getWalletByUserId(userId: string): Promise<Wallet>;
     // updateWallet(wallet: Wallet): Promise<Wallet>;
 }
 
@@ -18,6 +18,7 @@ export class WalletRepositoryDB implements IWalletRepository{
                 [newWallet.balance, newWallet.currency, newWallet.userId]
             );
             const success = result as ResultSetHeader;
+            if (!success.affectedRows) throw new AppError(400, 'Error creating wallet');
             const wallet: Wallet = {
                 id: success.insertId,
                 balance: newWallet.balance,
@@ -26,9 +27,27 @@ export class WalletRepositoryDB implements IWalletRepository{
             };
             return wallet;
         } catch (error) {
-            console.log(error);
-            throw error;
+            if (error instanceof AppError) throw error;
+            throw new AppError(500, 'Internal server error');
         }
 
+    }
+
+    async getWalletByUserId(userId: string): Promise<Wallet> {
+        try {
+            console.log(userId)
+            const [result] = await pool.execute(
+                'SELECT id, balance, currency, user_id FROM wallet WHERE user_id = ?',
+                [userId]
+            );
+            console.log(result)
+            const data = result as Wallet[];
+            const wallet = data[0];
+            if (!wallet) throw new AppError(404, 'Wallet not found');
+            return wallet;
+        } catch (error) {
+            if (error instanceof AppError) throw error;
+            throw new AppError(500, 'Internal server error');
+        }
     }
 }
