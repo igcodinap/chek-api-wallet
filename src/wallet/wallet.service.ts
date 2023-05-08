@@ -4,7 +4,6 @@ import { Wallet, NewWallet } from "./wallet.model";
 
 export interface IWalletService {
     createWallet(newWallet: NewWallet): Promise<Wallet>;
-    // getWalletById(walletId: number): Promise<Wallet>;
     getWalletByUserId(userId: string): Promise<Wallet>;
 }
 
