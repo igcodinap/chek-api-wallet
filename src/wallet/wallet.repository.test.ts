@@ -24,14 +24,14 @@ describe('WalletRepositoryDB', () => {
             (pool.execute as jest.Mock).mockResolvedValue([
                 {
                     affectedRows: 1,
-                    insertId: '1',
+                    insertId: 1,
                 },
             ]);
 
             const wallet = await walletRepository.createWallet(newWallet);
 
             expect(wallet).toEqual({
-                id: '1',
+                id: 1,
                 ...newWallet,
             });
 
