@@ -62,4 +62,48 @@ describe('WalletRepositoryDB', () => {
             );
         });
     });
+
+    describe('getWalletByUserId', () => {
+        it('should return the wallet associated with the given user ID', async () => {
+            const userId = '1';
+
+            (pool.execute as jest.Mock).mockResolvedValue([
+                [
+                    {
+                        id: 1,
+                        balance: 100,
+                        currency: 'CLP',
+                        userId: userId,
+                    },
+                ],
+            ]);
+
+            const wallet = await walletRepository.getWalletByUserId(userId);
+
+            expect(wallet).toEqual({
+                id: 1,
+                balance: 100,
+                currency: 'CLP',
+                userId,
+            });
+
+            expect(pool.execute).toHaveBeenCalledWith(
+                'SELECT id, balance, currency, user_id FROM wallet WHERE user_id = ?',
+                [userId]
+            );
+        });
+
+        it('should throw an AppError if the wallet is not found', async () => {
+            const userId = '1';
+
+            (pool.execute as jest.Mock).mockResolvedValue([[]]);
+
+            await expect(walletRepository.getWalletByUserId(userId)).rejects.toThrow(AppError);
+
+            expect(pool.execute).toHaveBeenCalledWith(
+                'SELECT id, balance, currency, user_id FROM wallet WHERE user_id = ?',
+                [userId]
+            );
+        });
+    });
 });
