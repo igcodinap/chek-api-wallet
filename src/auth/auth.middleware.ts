@@ -5,6 +5,7 @@ import AppError from '../errors/AppError';
 export class AuthMiddleware {
     public static async authorize(req: Request, res: Response, next: NextFunction) {
         try {
+            console.log('authorize');
             console.log(req.headers);
             const token = req.headers.authorization?.split(' ')[1];
             console.log(token);

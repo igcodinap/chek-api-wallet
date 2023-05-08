@@ -25,6 +25,7 @@ export class WalletMiddleware {
         try {
             const { userId } = req.params;
             const wallet = await this.service.getWalletByUserId(userId);
+            console.log(wallet, 'wallet')
             res.status(200).json(wallet);
         } catch (error) {
             next(error)
