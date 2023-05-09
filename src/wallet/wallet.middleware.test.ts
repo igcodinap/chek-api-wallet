@@ -78,3 +78,4 @@ describe('WalletMiddleware', () => {
     });
   });
 });
+// pending failure test

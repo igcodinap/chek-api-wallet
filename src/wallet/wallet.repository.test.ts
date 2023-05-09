@@ -53,7 +53,6 @@ describe('WalletRepositoryDB', () => {
                     affectedRows: 0,
                 },
             ]);
-
             await expect(walletRepository.createWallet(newWallet)).rejects.toThrow(AppError);
 
             expect(pool.execute).toHaveBeenCalledWith(
