@@ -4,6 +4,8 @@
   "description": "wallet api",
   "main": "app.ts",
   "scripts": {
+    "start": "node ./build/app.js",
+    "build": "tsc",
     "start:dev": "ts-node ./src/app.ts",
     "test": "jest",
     "test:coverage": "jest --coverage --coverageReporters=text-summary --coverageReporters=html"

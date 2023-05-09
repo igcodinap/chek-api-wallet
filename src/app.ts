@@ -3,7 +3,7 @@ import walletRouter from './wallet/wallet.routes';
 import { ErrorMiddleware } from './errors/ErrorMiddleware';
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT ? parseInt(process.env.PORT) : 3001;
 
 app.use(express.json());
 app.use('/wallet', walletRouter)
