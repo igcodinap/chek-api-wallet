@@ -60,6 +60,18 @@ describe('WalletRepositoryDB', () => {
                 [newWallet.balance, newWallet.currency, newWallet.userId]
             );
         });
+
+        it('should throw an AppError if pool execute throws an error', async () => {
+            const newWallet: NewWallet = {
+                balance: 100,
+                currency: 'CLP',
+                userId: 1,
+            };
+            const poolError = new Error('connection error');
+            (pool.execute as jest.Mock).mockRejectedValue(poolError);
+
+            await expect(walletRepository.createWallet(newWallet)).rejects.toThrow(AppError);
+        });
     });
 
     describe('getWalletByUserId', () => {
@@ -103,6 +115,15 @@ describe('WalletRepositoryDB', () => {
                 'SELECT id, balance, currency, user_id FROM wallet WHERE user_id = ?',
                 [userId]
             );
+        });
+
+        it('should throw an AppError if pool execute throws an error', async () => {
+            const userId = '1';
+            const poolError = new Error('connection error');
+
+            (pool.execute as jest.Mock).mockRejectedValue(poolError);
+
+            await expect(walletRepository.getWalletByUserId(userId)).rejects.toThrow(AppError);
         });
     });
 });

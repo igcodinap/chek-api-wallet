@@ -25,6 +25,12 @@ const mockNextFunction = () => {
   return next;
 };
 
+const mockNextFunctionWithError = (arg: Error) => {
+  const next: NextFunction = jest.fn();
+  next(arg);
+  return next;
+};
+
 describe('WalletMiddleware', () => {
   let walletMiddleware: WalletMiddleware;
 
@@ -51,6 +57,20 @@ describe('WalletMiddleware', () => {
       expect(res.status).toHaveBeenCalledWith(201);
       expect(res.json).toHaveBeenCalledWith(createdWallet);
     });
+    it('should call next function with error if wallet does not exist', async () => {
+      const req = mockRequest({}, { userId: '1' });
+      const res = mockResponse();
+
+      const error = new Error('Wallet not found');
+      const nextWithError = mockNextFunctionWithError(error);
+
+
+      mockWalletService.createWallet.mockRejectedValue(error)
+
+      await walletMiddleware.createWallet(req, res, nextWithError);
+
+      expect(nextWithError).toHaveBeenCalledWith(error);
+    });
   });
 
   describe('getWalletByUserId', () => {
@@ -75,6 +95,23 @@ describe('WalletMiddleware', () => {
       expect(mockWalletService.getWalletByUserId).toHaveBeenCalledWith(userId);
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith(wallet);
+    });
+
+    it('should call next function with error if wallet does not exist', async () => {
+      const req = mockRequest({}, { userId: '1' });
+      const res = mockResponse();
+
+      const { userId } = req.params;
+      const error = new Error('Wallet not found');
+      const nextWithError = mockNextFunctionWithError(error);
+
+
+      mockWalletService.getWalletByUserId.mockRejectedValue(error)
+
+      await walletMiddleware.getWalletByUserId(req, res, nextWithError);
+
+      expect(mockWalletService.getWalletByUserId).toHaveBeenCalledWith(userId);
+      expect(nextWithError).toHaveBeenCalledWith(error);
     });
   });
 });

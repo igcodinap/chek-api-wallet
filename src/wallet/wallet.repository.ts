@@ -12,7 +12,6 @@ export interface IWalletRepository {
 export class WalletRepositoryDB implements IWalletRepository{
     async createWallet(newWallet: NewWallet): Promise<Wallet> {
         try {
-            console.log(newWallet)
             const [result] = await pool.execute(
                 'INSERT INTO wallet (balance, currency, user_id) VALUES (?, ?, ?)',
                 [newWallet.balance, newWallet.currency, newWallet.userId]
@@ -35,12 +34,10 @@ export class WalletRepositoryDB implements IWalletRepository{
 
     async getWalletByUserId(userId: string): Promise<Wallet> {
         try {
-            console.log(userId, 'userId')
             const [result] = await pool.execute(
                 'SELECT id, balance, currency, user_id FROM wallet WHERE user_id = ?',
                 [userId]
             );
-            console.log(result, 'result')
             const data = result as Wallet[];
             const wallet = data[0];
             if (!wallet) throw new AppError(404, 'Wallet not found');
