@@ -9,4 +9,6 @@ const dbConfig = {
   connectionLimit: 5,
 };
 
+console.log(dbConfig)
+
 export const pool = mysql.createPool(dbConfig);
