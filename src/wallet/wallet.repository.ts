@@ -5,7 +5,7 @@ import AppError from '../errors/AppError';
 
 export interface IWalletRepository {
     createWallet(newWallet: NewWallet): Promise<Wallet>;
-    getWalletByUserId(userId: string): Promise<Wallet>;
+    getWalletByUserId(userId: string): Promise<Wallet | undefined>;
     // updateWallet(wallet: Wallet): Promise<Wallet>;
 }
 
@@ -32,7 +32,7 @@ export class WalletRepositoryDB implements IWalletRepository{
 
     }
 
-    async getWalletByUserId(userId: string): Promise<Wallet> {
+    async getWalletByUserId(userId: string): Promise<Wallet | undefined> {
         try {
             const [result] = await pool.execute(
                 'SELECT id, balance, currency, user_id FROM wallet WHERE user_id = ?',
@@ -42,7 +42,6 @@ export class WalletRepositoryDB implements IWalletRepository{
             const wallet = data[0];
             return wallet;
         } catch (error) {
-            if (error instanceof AppError) throw error;
             throw new AppError(500, 'Internal server error');
         }
     }

@@ -104,19 +104,6 @@ describe('WalletRepositoryDB', () => {
             );
         });
 
-        it('should throw an AppError if the wallet is not found', async () => {
-            const userId = '1';
-
-            (pool.execute as jest.Mock).mockResolvedValue([[]]);
-
-            await expect(walletRepository.getWalletByUserId(userId)).rejects.toThrow(AppError);
-
-            expect(pool.execute).toHaveBeenCalledWith(
-                'SELECT id, balance, currency, user_id FROM wallet WHERE user_id = ?',
-                [userId]
-            );
-        });
-
         it('should throw an AppError if pool execute throws an error', async () => {
             const userId = '1';
             const poolError = new Error('connection error');

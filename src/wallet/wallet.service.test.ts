@@ -35,6 +35,24 @@ describe('WalletService', () => {
       expect(result).toEqual(createdWallet);
       expect(mockWalletRepository.createWallet).toHaveBeenCalledWith(newWallet);
     });
+
+    it('should throw an error if the user already has a wallet', async () => {
+      const newWallet: NewWallet = {
+        balance: 100,
+        currency: 'CLP',
+        userId: 1,
+      };
+
+      const createdWallet: Wallet = {
+        id: 1,
+        ...newWallet,
+      };
+
+      mockWalletRepository.getWalletByUserId.mockResolvedValue(createdWallet);
+
+      await expect(walletService.createWallet(newWallet)).rejects.toThrowError();
+      expect(mockWalletRepository.getWalletByUserId).toHaveBeenCalledWith(newWallet.userId.toString());
+    });
   });
 
   describe('getWalletByUserId', () => {
@@ -53,6 +71,16 @@ describe('WalletService', () => {
       const result = await walletService.getWalletByUserId(userIdStr);
 
       expect(result).toEqual(wallet);
+      expect(mockWalletRepository.getWalletByUserId).toHaveBeenCalledWith(userIdStr);
+    });
+
+    it('should throw an error if the wallet does not exist', async () => {
+      const userId = 1;
+      const userIdStr = userId.toString();
+
+      mockWalletRepository.getWalletByUserId.mockResolvedValue(undefined)
+
+      await expect(walletService.getWalletByUserId(userIdStr)).rejects.toThrowError();
       expect(mockWalletRepository.getWalletByUserId).toHaveBeenCalledWith(userIdStr);
     });
   });
