@@ -40,7 +40,6 @@ export class WalletRepositoryDB implements IWalletRepository{
             );
             const data = result as Wallet[];
             const wallet = data[0];
-            if (!wallet) throw new AppError(404, 'Wallet not found');
             return wallet;
         } catch (error) {
             if (error instanceof AppError) throw error;
