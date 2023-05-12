@@ -1,11 +1,11 @@
-import { Wallet, NewWallet } from './wallet.model';
+import { Wallet, NewWallet } from "./wallet.model";
 
-describe('Wallet Model', () => {
-  describe('Wallet', () => {
-    it('should create a new Wallet instance with the given properties', () => {
+describe("Wallet Model", () => {
+  describe("Wallet", () => {
+    it("should create a new Wallet instance with the given properties", () => {
       const id = 1;
       const balance = 100;
-      const currency = 'CLP';
+      const currency = "CLP";
       const userId = 2;
 
       const wallet = new Wallet(id, balance, currency, userId);
@@ -17,9 +17,9 @@ describe('Wallet Model', () => {
     });
   });
 
-  describe('NewWallet', () => {
-    it('should create a new NewWallet instance with the given properties and a balance of 0', () => {
-      const currency = 'CLP';
+  describe("NewWallet", () => {
+    it("should create a new NewWallet instance with the given properties and a balance of 0", () => {
+      const currency = "CLP";
       const userId = 2;
 
       const newWallet = new NewWallet(currency, userId);

@@ -1,13 +1,13 @@
-import { IWalletRepository } from './wallet.repository';
-import { WalletService } from './wallet.service';
-import { NewWallet, Wallet } from './wallet.model';
+import { IWalletRepository } from "./wallet.repository";
+import { WalletService } from "./wallet.service";
+import { NewWallet, Wallet } from "./wallet.model";
 
 const mockWalletRepository: jest.Mocked<IWalletRepository> = {
   createWallet: jest.fn(),
   getWalletByUserId: jest.fn(),
 };
 
-describe('WalletService', () => {
+describe("WalletService", () => {
   let walletService: WalletService;
 
   beforeEach(() => {
@@ -15,11 +15,11 @@ describe('WalletService', () => {
     walletService = new WalletService(mockWalletRepository);
   });
 
-    describe('createWallet', () => {
-    it('should call the wallet repository and return a new wallet', async () => {
+  describe("createWallet", () => {
+    it("should call the wallet repository and return a new wallet", async () => {
       const newWallet: NewWallet = {
         balance: 100,
-        currency: 'CLP',
+        currency: "CLP",
         userId: 1,
       };
 
@@ -36,10 +36,10 @@ describe('WalletService', () => {
       expect(mockWalletRepository.createWallet).toHaveBeenCalledWith(newWallet);
     });
 
-    it('should throw an error if the user already has a wallet', async () => {
+    it("should throw an error if the user already has a wallet", async () => {
       const newWallet: NewWallet = {
         balance: 100,
-        currency: 'CLP',
+        currency: "CLP",
         userId: 1,
       };
 
@@ -50,18 +50,22 @@ describe('WalletService', () => {
 
       mockWalletRepository.getWalletByUserId.mockResolvedValue(createdWallet);
 
-      await expect(walletService.createWallet(newWallet)).rejects.toThrowError();
-      expect(mockWalletRepository.getWalletByUserId).toHaveBeenCalledWith(newWallet.userId.toString());
+      await expect(
+        walletService.createWallet(newWallet)
+      ).rejects.toThrowError();
+      expect(mockWalletRepository.getWalletByUserId).toHaveBeenCalledWith(
+        newWallet.userId.toString()
+      );
     });
   });
 
-  describe('getWalletByUserId', () => {
-    it('should call the wallet repository and return a wallet for the given user ID', async () => {
+  describe("getWalletByUserId", () => {
+    it("should call the wallet repository and return a wallet for the given user ID", async () => {
       const userId = 1;
       const wallet: Wallet = {
         id: 1,
         balance: 100,
-        currency: 'CLP',
+        currency: "CLP",
         userId,
       };
       const userIdStr = userId.toString();
@@ -71,17 +75,23 @@ describe('WalletService', () => {
       const result = await walletService.getWalletByUserId(userIdStr);
 
       expect(result).toEqual(wallet);
-      expect(mockWalletRepository.getWalletByUserId).toHaveBeenCalledWith(userIdStr);
+      expect(mockWalletRepository.getWalletByUserId).toHaveBeenCalledWith(
+        userIdStr
+      );
     });
 
-    it('should throw an error if the wallet does not exist', async () => {
+    it("should throw an error if the wallet does not exist", async () => {
       const userId = 1;
       const userIdStr = userId.toString();
 
-      mockWalletRepository.getWalletByUserId.mockResolvedValue(undefined)
+      mockWalletRepository.getWalletByUserId.mockResolvedValue(undefined);
 
-      await expect(walletService.getWalletByUserId(userIdStr)).rejects.toThrowError();
-      expect(mockWalletRepository.getWalletByUserId).toHaveBeenCalledWith(userIdStr);
+      await expect(
+        walletService.getWalletByUserId(userIdStr)
+      ).rejects.toThrowError();
+      expect(mockWalletRepository.getWalletByUserId).toHaveBeenCalledWith(
+        userIdStr
+      );
     });
   });
 });
