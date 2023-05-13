@@ -85,6 +85,33 @@ npm run format
 - JWT
 - TypeScript
 
+## Project Structure
+
+```
+├── app.ts
+├── auth
+│   └── auth.middleware.ts
+├── config
+│   └── database.ts
+├── errors
+│   ├── AppError.test.ts
+│   ├── AppError.ts
+│   └── ErrorMiddleware.ts
+├── services
+│   ├── jwt.service.test.ts
+│   └── jwt.service.ts
+└── wallet
+    ├── wallet.middleware.test.ts
+    ├── wallet.middleware.ts
+    ├── wallet.model.test.ts
+    ├── wallet.model.ts
+    ├── wallet.repository.test.ts
+    ├── wallet.repository.ts
+    ├── wallet.routes.ts
+    ├── wallet.service.test.ts
+    └── wallet.service.ts
+```
+
 ## Authors
 
 - Ignacio Codina - https://github.com/igcodinap
