@@ -6,6 +6,7 @@ import { NewWallet } from "./wallet.model";
 const mockWalletService: jest.Mocked<IWalletService> = {
   createWallet: jest.fn(),
   getWalletByUserId: jest.fn(),
+  updateBalance: jest.fn(),
 };
 
 const mockRequest = (body = {}, params = {}) =>

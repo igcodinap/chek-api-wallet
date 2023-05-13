@@ -1,10 +1,11 @@
 import { IWalletRepository } from "./wallet.repository";
-import { Wallet, NewWallet } from "./wallet.model";
+import { Wallet, NewWallet, WalletBalanceUpdate } from "./wallet.model";
 import AppError from "../errors/AppError";
 
 export interface IWalletService {
   createWallet(newWallet: NewWallet): Promise<Wallet>;
   getWalletByUserId(userId: string): Promise<Wallet>;
+  updateBalance(wallet: WalletBalanceUpdate): Promise<Wallet>;
 }
 
 export class WalletService implements IWalletService {
@@ -22,5 +23,10 @@ export class WalletService implements IWalletService {
     const wallet = await this.walletRepository.getWalletByUserId(userId);
     if (!wallet) throw new AppError(404, "Wallet not found");
     return wallet;
+  }
+
+  async updateBalance(wallet: WalletBalanceUpdate): Promise<Wallet> {
+    const updatedWallet = await this.walletRepository.updateBalance(wallet);
+    return updatedWallet;
   }
 }

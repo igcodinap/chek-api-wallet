@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { IWalletService } from "./wallet.service";
-import { NewWallet } from "./wallet.model";
+import { NewWallet, WalletBalanceUpdate } from "./wallet.model";
 import AppError from "../errors/AppError";
 
 export class WalletMiddleware {
@@ -9,6 +9,7 @@ export class WalletMiddleware {
     this.service = walletService;
     this.createWallet = this.createWallet.bind(this);
     this.getWalletByUserId = this.getWalletByUserId.bind(this);
+    this.updateBalance = this.updateBalance.bind(this);
   }
 
   async createWallet(req: Request, res: Response, next: NextFunction) {
@@ -32,6 +33,20 @@ export class WalletMiddleware {
       const id = Number(userId);
       if (isNaN(id)) throw new AppError(400, "Invalid field");
       const wallet = await this.service.getWalletByUserId(userId);
+      res.status(200).json(wallet);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateBalance(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id, balance } = req.body;
+      if (!id || !balance) throw new AppError(400, "Invalid fields");
+      if (typeof id !== "number" || typeof balance !== "number") throw new AppError(400, "Invalid fields");
+      if (balance < 0) throw new AppError(400, "Balance must be greater than 0")
+      const newWalletBalance = new WalletBalanceUpdate(id, balance);
+      const wallet = await this.service.updateBalance(newWalletBalance);
       res.status(200).json(wallet);
     } catch (error) {
       next(error);

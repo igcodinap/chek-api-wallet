@@ -5,6 +5,7 @@ import { NewWallet, Wallet } from "./wallet.model";
 const mockWalletRepository: jest.Mocked<IWalletRepository> = {
   createWallet: jest.fn(),
   getWalletByUserId: jest.fn(),
+  updateBalance: jest.fn(),
 };
 
 describe("WalletService", () => {

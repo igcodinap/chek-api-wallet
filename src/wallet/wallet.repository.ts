@@ -1,12 +1,13 @@
 import { ResultSetHeader } from "mysql2/promise";
 import { pool } from "../config/database";
-import { Wallet, NewWallet } from "./wallet.model";
+import { Wallet, NewWallet, WalletBalanceUpdate } from "./wallet.model";
 import AppError from "../errors/AppError";
 
 export interface IWalletRepository {
   createWallet(newWallet: NewWallet): Promise<Wallet>;
   getWalletByUserId(userId: string): Promise<Wallet | undefined>;
-  // updateWallet(wallet: Wallet): Promise<Wallet>;
+  // for testing purposes
+  updateBalance(wallet: WalletBalanceUpdate): Promise<Wallet>;
 }
 
 export class WalletRepositoryDB implements IWalletRepository {
@@ -40,6 +41,21 @@ export class WalletRepositoryDB implements IWalletRepository {
       );
       const data = result as Wallet[];
       const wallet = data[0];
+      return wallet;
+    } catch (error) {
+      throw new AppError(500, "Internal server error");
+    }
+  }
+
+  async updateBalance(wallet: Wallet): Promise<Wallet> {
+    try {
+      const [result] = await pool.execute(
+        "UPDATE wallet SET balance = ? WHERE id = ?",
+        [wallet.balance, wallet.id]
+      );
+      const success = result as ResultSetHeader;
+      if (!success.affectedRows)
+        throw new AppError(400, "Error updating wallet");
       return wallet;
     } catch (error) {
       throw new AppError(500, "Internal server error");

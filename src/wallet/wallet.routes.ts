@@ -10,10 +10,12 @@ const walletService = new WalletService(walletRepository);
 const wallet = new WalletMiddleware(walletService);
 
 router.post("/", wallet.createWallet);
+router.put("/", wallet.updateBalance);
 router.get(
   "/userid/:userId",
   AuthMiddleware.authorize,
   wallet.getWalletByUserId
 );
+
 
 export default router;
