@@ -1,5 +1,6 @@
 import { JwtService } from "../services/jwt.service";
 import jwt from "jsonwebtoken";
+import AppError from "../errors/AppError";
 
 jest.mock("jsonwebtoken");
 
@@ -16,7 +17,6 @@ describe("JwtService", () => {
       email: "user@mail.com",
     };
 
-    (jwt.sign as jest.Mock).mockReturnValue("jwtToken");
     (jwt.verify as jest.Mock).mockReturnValue(payload);
   });
 
@@ -30,6 +30,14 @@ describe("JwtService", () => {
 
       expect(jwt.verify).toHaveBeenCalledWith("jwtToken", jwtSecret);
       expect(decoded).toEqual(payload);
+    });
+
+    it("should throw an AppError when jwt verification fails", () => {
+      (jwt.verify as jest.Mock).mockImplementation(() => {
+        throw new Error();
+      });
+
+      expect(() => JwtService.verifyToken("invalidToken")).toThrow(AppError);
     });
   });
 });
